@@ -1,0 +1,48 @@
+<script src="https://cdn.tailwindcss.com"></script>
+{% load widget_tweaks %}
+{% block content %}
+<div class="min-h-screen bg-gradient-to-r from-orange-100 via-yellow-100 to-[#FFF8F0] py-6 sm:py-8 px-4">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-md mx-auto bg-white rounded-2xl shadow-xl p-6 sm:p-8 space-y-6">
+            <!-- Header -->
+            <div class="text-center">
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-gray-800 mb-2">เข้าสู่ระบบ</h2>
+                <p class="text-sm sm:text-base text-gray-500">กรุณากรอกชื่อผู้ใช้และรหัสผ่านเพื่อเข้าสู่ระบบ</p>
+            </div>
+
+            <!-- Form -->
+            <form action="{% url 'login' %}" method="post" class="space-y-5 sm:space-y-6">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.GET.next }}">
+                <div class="text-red-500 text-sm text-center">
+                    {{ form.non_field_errors }}
+                </div>
+
+                <!-- Username -->
+                <div class="form-control">
+                    <label for="{{ form.username.id_for_label }}" class="block font-medium text-gray-700 text-sm sm:text-base mb-2">ชื่อผู้ใช้</label>
+                    <input type="text" id="{{ form.username.id_for_label }}" name="username" value="{{ form.username.value|default:'' }}" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFA94D] focus:border-transparent transition" required>
+                    <p class="text-red-500 text-sm mt-1">{{ form.username.errors }}</p>
+                </div>
+
+                <!-- Password -->
+                <div class="form-control">
+                    <label for="{{ form.password.id_for_label }}" class="block font-medium text-gray-700 text-sm sm:text-base mb-2">รหัสผ่าน</label>
+                    <input type="password" id="{{ form.password.id_for_label }}" name="password" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFA94D] focus:border-transparent transition" required>
+                    <p class="text-red-500 text-sm mt-1">{{ form.password.errors}}</p>
+                </div>
+
+                <!-- Submit and Signup Link -->
+                <div class="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4 pt-4">
+                    <a href="{% url 'signup' %}" class="inline-flex justify-center items-center px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-full font-semibold shadow-md transition-colors duration-300 text-sm sm:text-base">
+                        สมัครสมาชิก
+                    </a>
+                    <button type="submit" class="inline-flex justify-center items-center px-6 py-3 bg-[#FFA94D] hover:bg-[#FB923C] text-white rounded-full font-semibold shadow-md transition-colors duration-300 text-sm sm:text-base">
+                        เข้าสู่ระบบ
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

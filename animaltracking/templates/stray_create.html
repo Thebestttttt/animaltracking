@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+    <div class="min-h-screen bg-gray-50 py-6 sm:py-8">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 sm:mt-10 mb-10">
+            <div class="bg-white rounded-xl shadow-lg p-4 sm:p-6 lg:p-10 space-y-6 ">
+                <h2 class="text-2xl sm:text-3xl font-semibold text-center text-gray-800">แจ้งสัตว์จร / ปักหมุดพิกัด</h2>
+                <!-- แสดง error ทั้งหมด -->
+                <!-- มาจาก form.clean() เลย  -->
+                {% if form_animal.non_field_errors %}
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4">
+                        {% for error in form_animal.non_field_errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <form action="" method="post" enctype="multipart/form-data" class="space-y-4 sm:space-y-6">
+                    {% csrf_token %}
+                    
+                    <!-- ชนิดสัตว์ -->
+                    <div class="form-control">
+                        <label for="{{ form_animal.species.id_for_label }}" class="block font-medium text-gray-700 text-sm sm:text-base mb-2">ชนิดสัตว์</label>
+                        {{ form_animal.species | add_class:"w-full sm:w-60 border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-300" }}
+                        {{ form_animal.species.errors }}
+                    </div>
+
+                    <!-- ข้อมูลสัตว์ - Row 1 -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="form-control">
+                            <label for="{{ form_animal.name.id_for_label }}" class="block font-medium text-gray-700 text-sm sm:text-base mb-2">ชื่อสัตว์</label>
+                            {{ form_animal.name | add_class:"w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-300" }}
+                            {{ form_animal.name.errors }}
+                        </div>
+                        <div class="form-control">
+                            <label for="{{ form_animal.gender.id_for_label }}" class="block font-medium text-gray-700 text-sm sm:text-base mb-2">เพศ</label>
+                            {{ form_animal.gender | add_class:"w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-300" }}
+                            {{ form_animal.gender.errors }}
+                        </div>
+                    </div>
+
+                    <!-- ข้อมูลสัตว์ - Row 2 -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="form-control">
+                            <label for="{{ form_animal.age.id_for_label }}" class="block font-medium text-gray-700 text-sm sm:text-base mb-2">อายุ (ex.5เดือน, 1ปี)</label>
+                            {{ form_animal.age | add_class:"w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-300" }}
+                            {{ form_animal.age.errors }}
+                        </div>
+                        <div class="form-control">
+                            <label for="{{ form_animal.color.id_for_label }}" class="block font-medium text-gray-700 text-sm sm:text-base mb-2">สี</label>
+                            {{ form_animal.color | add_class:"w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-300" }}
+                            {{ form_animal.color.errors }}
+                        </div>
+                    </div>
+                    
+                    <!-- Tag -->
+                    <div class="form-control">
+                        <div>
+                            <label for="{{ form_animal.tag.id_for_label }}" class="block font-medium text-gray-700 text-sm sm:text-base mb-2">Tag</label>
+                            {{ form_animal.tag | add_class:"border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-300" }}
+                            {{ form_animal.tag.errors }}
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="form-control">
+                        <label for="{{ form_animal.description.id_for_label }}" class="block font-medium text-gray-700 text-sm sm:text-base mb-2">ลักษณะเพิ่มเติมของสัตว์</label>
+                        {{ form_animal.description | add_class:"w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-300" }}
+                        {{ form_animal.description.errors }}
+                    </div>
+
+                    <!-- วันที่พบ -->
+                    <div class="form-control">
+                        <label for="{{ form_stray.date_found.id_for_label }}" class="block font-medium text-gray-700 text-sm sm:text-base mb-2">วันที่พบ</label>
+                        {{ form_stray.date_found | add_class:"w-full sm:w-60 border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-300" }}
+                        {{ form_stray.date_found.errors }}
+                    </div>
+
+                    <!-- Map Section -->
+                    <div class="form-control">
+                        <label class="block font-medium text-gray-700 text-sm sm:text-base mb-2">ตำแหน่งบนแผนที่</label>
+                        <div id="map" class="w-full h-[300px] sm:h-[400px] lg:h-[500px] rounded-2xl shadow-lg"></div>
+                        <input type="text" name="latitude" id="id_latitude" class="mt-2 w-full px-2 py-1 border border-gray-300 rounded-md" readonly placeholder="Latitude">
+                            {{ form_stray.latitude.errors |striptags }}
+                        <input type="text" name="longitude" id="id_longitude" class="mt-1 w-full px-2 py-1 border border-gray-300 rounded-md" readonly placeholder="Longitude">
+                            {{ form_stray.longitude.errors |striptags }}
+
+                    </div>
+
+                    <!-- Location Description -->
+                    <div class="form-control">
+                        <label for="{{ form_stray.description_location.id_for_label }}" class="block font-medium text-gray-700 text-sm sm:text-base mb-2">ลักษณะเพิ่มเติมของสถานที่</label>
+                        
+                        {{ form_stray.description_location | add_class:"w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-300" }}
+                        <p class="text-red-500 text-sm mt-1">
+                        {{ form_stray.description_location.errors  }} 
+                        </p>
+                    </div>
+
+                    <!-- Upload Image -->
+                    <div class="form-control">
+                        <label class="block font-medium text-gray-700 text-sm sm:text-base mb-2">Upload Image</label>
+                        <label for="{{ form_animal.image.id_for_label }}" class="inline-block cursor-pointer px-4 sm:px-5 py-2 rounded-lg bg-orange-500 text-white hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-400 transition-colors duration-200">
+                            Choose Image
+                        </label>
+                        {{ form_animal.image }}
+                        {{ form_animal.image.errors }}
+                        <img id="preview" class="mx-auto mt-3 rounded-lg border max-w-full h-48 sm:h-64 object-contain hidden" alt="Preview" />
+                    </div>
+
+                    <!-- Submit Buttons -->
+                    <div class="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4 pt-4">
+                        <a href="{% url 'stray' %}" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-2 rounded-full font-semibold shadow-md transition-colors duration-200 text-center w-full sm:w-auto">
+                            ย้อนกลับ
+                        </a>
+                        <button type="submit" class="bg-[#8FD19E] hover:bg-[#76c285] text-white px-6 py-2 rounded-full font-semibold shadow-md transition-colors duration-200 w-full sm:w-auto">
+                            บันทึกข้อมูล
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block script %}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js">
+    </script>
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function() {
+            var map = L.map('map').setView([13.736717, 100.523186], 6);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+
+            let marker;
+
+            map.on('click', function(e){
+                const {lat,lng} = e.latlng;
+                if(marker) map.removeLayer(marker);
+                marker = L.marker([lat,lng]).addTo(map);
+                document.getElementById('id_latitude').value = lat.toFixed(6);
+                document.getElementById('id_longitude').value = lng.toFixed(6);
+            });
+
+        });
+        // Preview รูปภาพ
+        document.getElementById("id_image").addEventListener("change", function(e){
+            var output = document.getElementById('preview');
+            // สร้าง URL ชั่วคราวสำหรับไฟล์ที่เลือก
+            output.src = URL.createObjectURL(e.target.files[0]);
+            output.classList.remove('hidden');
+        });
+    </script>
+{% endblock %}

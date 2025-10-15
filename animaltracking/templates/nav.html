@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <header class="bg-[#FFA94D] text-white shadow-md p-4 sm:p-6 flex justify-between items-center h-20">
+        <!-- Logo -->
+        <a href="{% url 'home' %}" class="text-xl sm:text-2xl font-bold tracking-tight">Animal Tracking</a>
+
+        <button id="menu-toggle" class="sm:hidden focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+            </svg>
+        </button>
+
+        <!-- Nav -->
+        <nav id="nav-menu" class="hidden sm:flex sm:items-center sm:space-x-6 absolute sm:static top-20 left-0 w-full sm:w-auto bg-[#FFA94D] sm:bg-transparent p-4 sm:p-0 transition-all duration-300 ease-in-out">
+            <a href="{% url 'stray' %}" class="block sm:inline-block text-lg sm:text-xl py-2 sm:py-0 rounded-lg hover:bg-gray-50 hover:text-[#FFA94D] p-1">สัตว์จร</a>
+            <a href="{% url 'lost' %}" class="block sm:inline-block text-lg sm:text-xl py-2 sm:py-0 rounded-lg hover:bg-gray-50 hover:text-[#FFA94D] p-1">แจ้งสัตว์หาย</a>
+            <!-- Profile Dropdown -->
+            <div class="relative">
+                <button id="profile-toggle" class="flex items-center space-x-2 text-lg sm:text-xl py-2 sm:py-0 focus:outline-none hover:bg-gray-50 hover:text-[#FFA94D] m-2 hover:rounded-full">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    
+                </svg>
+                </button>
+                <div id="profile-dropdown" class="absolute right-0 mt-2 w-48 bg-white text-gray-800 rounded-lg shadow-lg hidden z-10">
+                    {% if user.is_authenticated %}
+                        <a class="block px-4 py-2">บัญชีผู้ใช้ : {{ user.username }}</a>
+                        {% if perms.animaltracking.view_tag %}
+                            <a href="{% url 'manage_tag' %}" class="block px-4 py-2 hover:bg-gray-100 rounded-lg">จัดแท็ก</a>
+                        {% endif %}
+                        <a href="{% url 'change_password' %}" class="block px-4 py-2 hover:bg-gray-100 rounded-lg">
+                        ลืมรหัสผ่าน
+                        </a>
+                        
+                        <a href="{% url 'logout' %}" class="block px-4 py-2 hover:bg-gray-100 rounded-lg">ออกจากระบบ</a>
+                            
+                    {% else %}
+                        <a href="{% url 'login' %}" class="block px-4 py-2 hover:bg-gray-100 rounded-lg">เข้าสู่ระบบ</a>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <script>
+        const menuToggle = document.getElementById('menu-toggle');
+        const navMenu = document.getElementById('nav-menu');
+        const profileToggle = document.getElementById('profile-toggle');
+        const profileDropdown = document.getElementById('profile-dropdown');
+
+        menuToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('hidden');
+        });
+
+        profileToggle.addEventListener('click', (e) => {
+            e.stopPropagation(); 
+            profileDropdown.classList.toggle('hidden');
+        });
+
+    </script>
+</body>
+</html>

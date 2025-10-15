@@ -1,0 +1,86 @@
+<script src="https://cdn.tailwindcss.com"></script>
+{% load widget_tweaks %}
+{% block content %}
+<div class="min-h-screen bg-gradient-to-r from-orange-100 via-yellow-100 to-[#FFF8F0] py-6 sm:py-8 px-4">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-md mx-auto bg-white rounded-2xl shadow-xl p-6 sm:p-8 space-y-6">
+            <!-- Header -->
+            <div class="text-center">
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-gray-800 mb-2">สมัครสมาชิก</h2>
+                <p class="text-sm sm:text-base text-gray-500">กรุณากรอกข้อมูลเพื่อสร้างบัญชีของคุณ</p>
+            </div>
+
+            <!-- Form -->
+            <form method="post" class="space-y-5 sm:space-y-6">
+                {% csrf_token %}
+                {% if form.non_field_errors %}
+                    <div class="text-red-500 text-sm text-center">
+                        {% for error in form.non_field_errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- Username -->
+                <div class="form-control">
+                    <label for="{{ form.username.id_for_label }}" class="block font-medium text-gray-700 text-sm sm:text-base mb-2">ชื่อผู้ใช้</label>
+                    <input type="text" id="{{ form.username.id_for_label }}" name="username" value="{{ form.username.value|default:'' }}" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFA94D] focus:border-transparent transition" >
+                    {{ form.username.errors }}
+                </div>
+
+                <!-- First Name -->
+                <div class="form-control">
+                    <label for="{{ form.first_name.id_for_label }}" class="block font-medium text-gray-700 text-sm sm:text-base mb-2">ชื่อจริง</label>
+                    <input type="text" id="{{ form.first_name.id_for_label }}" name="first_name" value="{{ form.first_name.value|default:'' }}" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFA94D] focus:border-transparent transition" >
+                    {{ form.first_name.errors }}
+                </div>
+
+                <!-- Last Name -->
+                <div class="form-control">
+                    <label for="{{ form.last_name.id_for_label }}" class="block font-medium text-gray-700 text-sm sm:text-base mb-2">นามสกุล</label>
+                    <input type="text" id="{{ form.last_name.id_for_label }}" name="last_name" value="{{ form.last_name.value|default:'' }}" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFA94D] focus:border-transparent transition">
+                    {{ form.last_name.errors }}
+                </div>
+
+                <!-- Email -->
+                <div class="form-control">
+                    <label for="{{ form.email.id_for_label }}" class="block font-medium text-gray-700 text-sm sm:text-base mb-2">อีเมล</label>
+                    <input type="email" id="{{ form.email.id_for_label }}" name="email" value="{{ form.email.value|default:'' }}" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFA94D] focus:border-transparent transition">
+                    {{ form.email.errors }}
+                </div>
+
+                <!-- Phone -->
+                <div class="form-control">
+                    <label for="{{ form_profile.phone_number.id_for_label }}" class="block font-medium text-gray-700 text-sm sm:text-base mb-2">เบอร์โทรศัพท์</label>
+                    <input type="text" id="{{ form_profile.phone_number.id_for_label }}" name="phone_number" value="{{ form_profile.phone_number.value|default:'' }}" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFA94D] focus:border-transparent transition">
+                    {{ form_profile.phone_number.errors }}
+                </div>
+
+                <!-- Password -->
+                <div class="form-control">
+                    <label for="{{ form.password1.id_for_label }}" class="block font-medium text-gray-700 text-sm sm:text-base mb-2">รหัสผ่าน</label>
+                    <input type="password" id="{{ form.password1.id_for_label }}" name="password1" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFA94D] focus:border-transparent transition">
+                    {{ form.password1.errors }}
+                </div>
+
+                <!-- Password Confirmation -->
+                <div class="form-control">
+                    <label for="{{ form.password2.id_for_label }}" class="block font-medium text-gray-700 text-sm sm:text-base mb-2">ยืนยันรหัสผ่าน</label>
+                    <input type="password" id="{{ form.password2.id_for_label }}" name="password2" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFA94D] focus:border-transparent transition">
+                    {{ form.password2.errors }}
+                </div>
+
+                <!-- Submit -->
+                <div class="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4 pt-4">
+                    <a href="{% url 'login' %}" class="inline-flex justify-center items-center px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-full font-semibold shadow-md transition-colors duration-300 text-sm sm:text-base">
+                        เข้าสู่ระบบ
+                    </a>
+                    <button type="submit" class="inline-flex justify-center items-center px-6 py-3 bg-[#FFA94D] hover:bg-[#FB923C] text-white rounded-full font-semibold shadow-md transition-colors duration-300 text-sm sm:text-base">
+                        สมัครสมาชิก
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

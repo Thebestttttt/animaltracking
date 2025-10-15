@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-6 sm:py-8">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 sm:mt-10 mb-10">
+        <div class="bg-white rounded-xl shadow-lg p-4 sm:p-6 lg:p-10 space-y-6 ">
+            <h2 class="text-2xl sm:text-3xl font-semibold text-center text-gray-800">แจ้งสัตว์หาย / ปักหมุดพิกัด</h2>
+            <div class="messages">
+                {% for message in messages %}
+                    <p class="text-red-600">{{ message }}</p>
+                {% endfor %}
+            </div>
+            {% if form_animal.non_field_errors %}
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4">
+                        {% for error in form_animal.non_field_errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+            {% endif %}
+            <form action="" method="post" enctype="multipart/form-data" class="space-y-4 sm:space-y-6">
+                {% csrf_token %}
+                
+                <!-- ชนิดสัตว์ -->
+                <div class="form-control">
+                    <label for="{{ form_animal.species.id_for_label }}" class="block font-medium text-gray-700 text-sm sm:text-base mb-2">ชนิดสัตว์</label>
+                    {{ form_animal.species | add_class:"w-full sm:w-60 border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-300" }}
+                    {{ form_animal.species.errors }}
+                </div>
+
+                <!-- ข้อมูลสัตว์ - Row 1 -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="form-control">
+                        <label for="{{ form_animal.name.id_for_label }}" class="block font-medium text-gray-700 text-sm sm:text-base mb-2">ชื่อสัตว์</label>
+                        {{ form_animal.name | add_class:"w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-300" }}
+                        {{ form_animal.name.errors }}
+                    </div>
+                    <div class="form-control">
+                        <label for="{{ form_animal.gender.id_for_label }}" class="block font-medium text-gray-700 text-sm sm:text-base mb-2">เพศ</label>
+                        {{ form_animal.gender | add_class:"w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-300" }}
+                        {{ form_animal.gender.errors }}
+                    </div>
+                </div>
+
+                <!-- ข้อมูลสัตว์ - Row 2 -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="form-control">
+                        <label for="{{ form_animal.age.id_for_label }}" class="block font-medium text-gray-700 text-sm sm:text-base mb-2">อายุ</label>
+                        {{ form_animal.age | add_class:"w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-300" }}
+                        {{ form_animal.age.errors }}
+                    </div>
+                    <div class="form-control">
+                        <label for="{{ form_animal.color.id_for_label }}" class="block font-medium text-gray-700 text-sm sm:text-base mb-2">สี</label>
+                        {{ form_animal.color | add_class:"w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-300" }}
+                        {{ form_animal.color.errors }}
+                    </div>
+                </div>
+                <!-- status -->
+                    <div class="form-control">
+                        <label for="{{ form_lost.status.id_for_label }}" class="block font-medium text-gray-700 text-sm sm:text-base mb-2">Status</label>
+                        {{ form_lost.status | add_class:"w-full sm:w-60 border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-300" }}
+                        {{ form_lost.status.errors }}
+                    </div>
+                
+                <!-- Tag -->
+                <div class="form-control">
+                    <div>
+                        <label for="{{ form_animal.tag.id_for_label }}" class="block font-medium text-gray-700 text-sm sm:text-base mb-2">Tag</label>
+                        {{ form_animal.tag | add_class:"border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-300" }}
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="form-control">
+                    <label for="{{ form_animal.description.id_for_label }}" class="block font-medium text-gray-700 text-sm sm:text-base mb-2">ลักษณะเพิ่มเติมของสัตว์</label>
+                    {{ form_animal.description | add_class:"w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-300" }}
+                    {{ form_animal.description.errors }}
+                </div>
+
+                <!-- วันที่พบ -->
+                <div class="form-control">
+                    <label for="{{ form_lost.date_lost.id_for_label }}" class="block font-medium text-gray-700 text-sm sm:text-base mb-2">วันที่พบ</label>
+                    {{ form_lost.date_lost | add_class:"w-full sm:w-60 border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-300" }}
+                    {{ form_lost.date_lost.errors }}
+                </div>
+
+                <!-- Map Section -->
+                <div class="form-control">
+                    <label class="block font-medium text-gray-700 text-sm sm:text-base mb-2">ตำแหน่งบนแผนที่</label>
+                    <div id="map" class="w-full h-[300px] sm:h-[400px] lg:h-[500px] rounded-2xl shadow-lg"></div>
+                    <input type="text" name="latitude" id="id_latitude" class="mt-2 w-full px-2 py-1 border border-gray-300 rounded-md" readonly placeholder="Latitude" value="{{ form_lost.instance.latitude }}">
+                    <input type="text" name="longitude" id="id_longitude" class="mt-1 w-full px-2 py-1 border border-gray-300 rounded-md" readonly placeholder="Longitude" value="{{ form_lost.instance.longitude }}">
+                    {{ form_lost.latitude.errors }}
+                    {{ form_lost.longitude.errors }}
+                </div>
+
+                <!-- Location Description -->
+                <div class="form-control">
+                    <label for="{{ form_lost.description_location.id_for_label }}" class="block font-medium text-gray-700 text-sm sm:text-base mb-2">ลักษณะเพิ่มเติมของสถานที่</label>
+                    {{ form_lost.description_location | add_class:"w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-300" }}
+                    {{ form_lost.description_location.errors }}
+                </div>
+
+                <!-- Submit Buttons -->
+                <div class="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4 pt-4">
+                    <a href="{% url 'lost' %}" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-2 rounded-full font-semibold shadow-md transition-colors duration-200 text-center w-full sm:w-auto">
+                        ย้อนกลับ
+                    </a>
+                    <button type="submit" class="bg-[#8FD19E] hover:bg-[#76c285] text-white px-6 py-2 rounded-full font-semibold shadow-md transition-colors duration-200 w-full sm:w-auto">
+                        บันทึกข้อมูล
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block script %}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js">
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const defaultLat = parseFloat(document.getElementById('id_latitude').value) || null;
+            const defaultLng = parseFloat(document.getElementById('id_longitude').value) || null;
+            var map = L.map('map').setView([13.736717, 100.523186], 6);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+
+            let marker;
+            if(defaultLat && defaultLng){
+                marker = L.marker([defaultLat, defaultLng]).addTo(map);
+            }
+
+            map.on('click', function(e){
+                const {lat,lng} = e.latlng;
+                if(marker) map.removeLayer(marker);
+                marker = L.marker([lat,lng]).addTo(map);
+                document.getElementById('id_latitude').value = lat.toFixed(6);
+                document.getElementById('id_longitude').value = lng.toFixed(6);
+            });
+
+
+        });
+    </script>
+{% endblock %}

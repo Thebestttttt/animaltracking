@@ -1,0 +1,35 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        {% block title %}
+            Animal Tracking
+        {% endblock %}
+    </title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
+    {% block nav %}
+        {% include 'nav.html' %}
+    {% endblock %}
+
+    <section class="w-full">
+        {% block head %}
+
+        {% endblock %}
+
+        {% block content %}
+            
+        {% endblock %}
+    </section>
+    
+    {% block script %}
+      <script src=""></script>
+    {% endblock %}
+  </body>
+</html>
